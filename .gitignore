@@ -1,0 +1,8 @@
+*.o
+
+/v4l2-mfc-encoder/demo.out
+/v4l2-mfc-encoder/mfc-encode
+/v4l2-mfc-encoder/.dep
+
+/v4l2-mfc-example/v4l2_decode
+
