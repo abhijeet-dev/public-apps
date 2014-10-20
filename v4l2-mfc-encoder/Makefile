@@ -17,20 +17,22 @@
 #
 
 # Toolchain path
-TCPATH = arm-linux-gnueabi-
-KERNELHEADERS = /home/kamil/praca/w1-party/kernel/headers/include
+# TCPATH = arm-linux-gnueabi-
+TCPATH =
+# KERNELHEADERS = /home/kamil/praca/w1-party/kernel/headers/include
 
 CC = ${TCPATH}gcc
 AR = "${TCPATH}ar rc"
 AR2 = ${TCPATH}ranlib make -j4
 
 
-INCLUDES = -I$(KERNELHEADERS)
+# INCLUDES = -I$(KERNELHEADERS)
 
 SOURCES = main.c args.c in_demo.c out_file.c mfc.c io_dev.c func_dev.c v4l_dev.c in_camera.c
 OBJECTS := $(SOURCES:.c=.o)
 EXEC = mfc-encode
-CFLAGS = -Wall -g -DS5PC1XX_FIMC
+# CFLAGS = -Wall -g -DS5PC1XX_FIMC
+CFLAGS = -Wall -g
 DEP = .dep
 
 all: $(EXEC) $(DEP)
