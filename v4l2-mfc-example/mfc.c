@@ -122,6 +122,7 @@ int mfc_dec_setup_output(struct instance *i, unsigned long codec,
 		buf.type = V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
 		buf.memory = V4L2_MEMORY_MMAP;
 		buf.index = n;
+		memzero(planes[0]);
 		buf.m.planes = planes;
 		buf.length = MFC_OUT_PLANES;
 
@@ -163,7 +164,9 @@ int mfc_dec_queue_buf(struct instance *i, int n, int l1, int l2, int type,
 	qbuf.index = n;
 	qbuf.m.planes = planes;
 	qbuf.length = nplanes;
+	memzero(qbuf.m.planes[0]);
 	qbuf.m.planes[0].bytesused = l1;
+	memzero(qbuf.m.planes[1]);
 	qbuf.m.planes[1].bytesused = l2;
 
 	ret = ioctl(i->mfc.fd, VIDIOC_QBUF, &qbuf);
@@ -249,6 +252,7 @@ int mfc_dec_setup_capture(struct instance *i, int extra_buf)
 	int ret;
 	int n;
 
+	memzero(fmt);
 	fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
 	ret = ioctl(i->mfc.fd, VIDIOC_G_FMT, &fmt);
 	if (ret) {
@@ -308,6 +312,8 @@ int mfc_dec_setup_capture(struct instance *i, int extra_buf)
 
 	i->mfc.cap_buf_cnt = reqbuf.count;
 
+	memzero(planes[0]);
+	memzero(planes[1]);
 	for (n = 0; n < i->mfc.cap_buf_cnt; n++) {
 		memzero(buf);
 		buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;

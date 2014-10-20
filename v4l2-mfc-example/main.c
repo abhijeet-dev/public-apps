@@ -102,6 +102,7 @@ int dequeue_output(struct instance *i, int *n)
 	struct v4l2_plane planes[MFC_OUT_PLANES];
 
 	memzero(qbuf);
+	memzero(planes[0]);
 	qbuf.type = V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
 	qbuf.memory = V4L2_MEMORY_MMAP;
 	qbuf.m.planes = planes;
@@ -121,6 +122,8 @@ int dequeue_capture(struct instance *i, int *n, int *finished)
 	struct v4l2_plane planes[MFC_CAP_PLANES];
 
 	memzero(qbuf);
+	memzero(planes[0]);
+	memzero(planes[1]);
 	qbuf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
 	qbuf.memory = V4L2_MEMORY_MMAP;
 	qbuf.m.planes = planes;
@@ -432,11 +435,6 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	if (dequeue_output(&inst, &n)) {
-		cleanup(&inst);
-		return 1;
-	}
-
 	if (fimc_setup_output_from_mfc(&inst)) {
 		cleanup(&inst);
 		return 1;
@@ -474,6 +472,11 @@ int main(int argc, char **argv)
 
 	if (mfc_stream(&inst, V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE,
 							VIDIOC_STREAMON)) {
+		cleanup(&inst);
+		return 1;
+	}
+
+	if (dequeue_output(&inst, &n)) {
 		cleanup(&inst);
 		return 1;
 	}

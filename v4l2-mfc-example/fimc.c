@@ -124,6 +124,7 @@ int fimc_setup_output_from_mfc(struct instance *i)
 	int n;
 
 	for (n = 0; n < MFC_CAP_PLANES; n++) {
+		memzero(planes[n]);
 		planes[n].sizeimage = i->mfc.cap_buf_size[n];
 		planes[n].bytesperline = i->mfc.cap_w;
 	}
@@ -158,6 +159,7 @@ int fimc_setup_capture_from_fb(struct instance *i)
 	unsigned long fmt;
 	int ret;
 
+	memzero(planes[0]);
 	planes[0].sizeimage = i->fb.stride * i->fb.height;
 	planes[0].bytesperline = i->fb.stride;
 
@@ -226,10 +228,12 @@ int fimc_dec_queue_buf_out_from_mfc(struct instance *i, int n)
 	buf.m.planes = planes;
 	buf.length = MFC_CAP_PLANES;
 
+	memzero(buf.m.planes[0]);
 	buf.m.planes[0].bytesused = i->mfc.cap_buf_size[0];
 	buf.m.planes[0].length = i->mfc.cap_buf_size[0];
 	buf.m.planes[0].m.userptr = (unsigned long)i->mfc.cap_buf_addr[n][0];
 
+	memzero(buf.m.planes[1]);
 	buf.m.planes[1].bytesused = i->mfc.cap_buf_size[1];
 	buf.m.planes[1].length = i->mfc.cap_buf_size[1];
 	buf.m.planes[1].m.userptr = (unsigned long)i->mfc.cap_buf_addr[n][1];
@@ -256,6 +260,7 @@ int fimc_dec_queue_buf_cap_from_fb(struct instance *i, int n)
 	buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
 	buf.memory = V4L2_MEMORY_USERPTR;
 	buf.index = n;
+	memzero(planes[0]);
 	buf.m.planes = planes;
 	buf.length = FIMC_CAP_PLANES;
 
@@ -282,6 +287,8 @@ int fimc_dec_dequeue_buf(struct instance *i, int *n, int nplanes, int type)
 	int ret;
 
 	memzero(buf);
+	memzero(planes[0]);
+	memzero(planes[1]);
 	buf.type = type;
 	buf.memory = V4L2_MEMORY_USERPTR;
 	buf.m.planes = planes;
