@@ -155,6 +155,8 @@ int process_chain(struct io_dev *chain[], int ndev)
 
 	do {
 		print_chain(chain, ndev);
+		if (chain[1]->io[DIR_IN].state == 4)
+			break;
 		ret = wait_for_ready_devs(chain, ndev);
 		print_chain(chain, ndev);
 		if (ret <= 0)
